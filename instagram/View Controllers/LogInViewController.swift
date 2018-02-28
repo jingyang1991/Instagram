@@ -15,7 +15,7 @@ class LogInViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
     }
 
@@ -24,6 +24,18 @@ class LogInViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     @IBAction func onSignIn(_ sender: Any) {
+        let username = usernameField.text ?? ""
+        let password = passwordField.text ?? ""
+        
+        PFUser.logInWithUsername(inBackground: username, password: password) { (user: PFUser?, error: Error?) in
+            if let error = error {
+                print("User log in failed: \(error.localizedDescription)")
+            } else {
+                print("User logged in successfully")
+                self.performSegue(withIdentifier: "loginSegue", sender: nil)
+                // display view controller that needs to shown after successful login
+            }
+        }
     }
     
     @IBAction func onSignUp(_ sender: Any) {
@@ -33,6 +45,7 @@ class LogInViewController: UIViewController {
         newUser.signUpInBackground { (success: Bool, Error: Error?) in
             if success {
                 print("Yay, created!")
+                self.performSegue(withIdentifier: "loginSegue", sender: nil)
             }
             else {
                 print(Error!.localizedDescription)
